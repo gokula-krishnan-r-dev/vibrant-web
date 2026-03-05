@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 200" fill="none">
+  <!-- Outer oval -->
+  <ellipse cx="210" cy="100" rx="205" ry="93" stroke="currentColor" stroke-width="5" fill="none"/>
+
+  <!-- Large stylized V -->
+  <path d="M42 52 L80 148 L100 148 L118 80 L108 52 L100 52 L90 100 L72 52 Z" fill="currentColor"/>
+  <!-- V teardrop accent -->
+  <path d="M95 42 C95 35 102 30 108 36 C114 42 110 52 103 52 C97 52 95 48 95 42 Z" fill="currentColor"/>
+
+  <!-- i -->
+  <rect x="128" y="72" width="10" height="76" rx="3" fill="currentColor"/>
+  <circle cx="133" cy="58" r="7" fill="currentColor"/>
+
+  <!-- b -->
+  <rect x="148" y="48" width="10" height="100" rx="3" fill="currentColor"/>
+  <path d="M158 95 C158 82 164 74 176 74 C188 74 195 83 195 96 C195 109 188 118 176 118 C164 118 158 109 158 97 Z" stroke="currentColor" stroke-width="10" fill="none" stroke-linejoin="round"/>
+
+  <!-- r -->
+  <rect x="205" y="74" width="10" height="74" rx="3" fill="currentColor"/>
+  <path d="M215 90 C215 80 222 74 234 74" stroke="currentColor" stroke-width="10" stroke-linecap="round" fill="none"/>
+
+  <!-- a -->
+  <path d="M243 92 C243 80 251 72 264 72 C277 72 285 80 285 92 L285 148 L275 148 L275 138 C272 144 266 150 258 150 C249 150 243 143 243 135 C243 125 250 118 263 116 L275 114 L275 90 C275 84 270 80 264 80 C258 80 253 84 253 90 Z M275 123 L263 125 C257 127 253 130 253 135 C253 140 257 143 262 143 C270 143 275 137 275 130 Z" fill="currentColor"/>
+
+  <!-- n -->
+  <rect x="295" y="74" width="10" height="74" rx="3" fill="currentColor"/>
+  <path d="M305 92 C305 80 313 72 326 72 C339 72 347 80 347 92 L347 148 L337 148 L337 94 C337 87 332 82 326 82 C320 82 315 87 315 94 L315 148 L305 148 Z" fill="currentColor"/>
+
+  <!-- t -->
+  <rect x="357" y="48" width="10" height="100" rx="3" fill="currentColor"/>
+  <rect x="346" y="74" width="34" height="10" rx="3" fill="currentColor"/>
+
+  <!-- Decorative underline sweep -->
+  <path d="M80 162 Q210 175 370 158" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+</svg>

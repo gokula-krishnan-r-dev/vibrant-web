@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn, formatPrice } from "@/lib/utils";
 import ProductCard from "@/components/products/ProductCard";
+import ProductInActionSection from "@/components/sections/ProductInActionSection";
 
 const tabs = ["Description", "Ingredients", "How to Use", "Benefits"] as const;
 type Tab = (typeof tabs)[number];
@@ -26,6 +27,8 @@ export default function ProductDetailClient({ product, related }: Props) {
     const [qty, setQty] = useState(1);
     const [activeTab, setActiveTab] = useState<Tab>("Description");
     const [added, setAdded] = useState(false);
+    const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+    const galleryImages = product.images?.length ? product.images : [product.image];
 
     const addItem = useCartStore((s) => s.addItem);
 
@@ -66,26 +69,59 @@ export default function ProductDetailClient({ product, related }: Props) {
             {/* Main product section */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                 <div className="grid lg:grid-cols-2 gap-16 items-start">
-                    {/* Product image */}
+                    {/* Product image + gallery */}
                     <div className="lg:sticky lg:top-28">
                         <div className="relative rounded-3xl overflow-hidden bg-[hsl(var(--muted))] aspect-square border">
                             <div className="absolute inset-0 bg-gradient-to-br from-[hsl(var(--primary)/0.05)] to-transparent" />
-                            <Image
-                                src={product.image}
-                                alt={product.name}
-                                fill
-                                className="object-contain p-12"
-                                sizes="(max-width: 1024px) 100vw, 50vw"
-                                priority
-                            />
+                            {galleryImages.map((src, i) => (
+                                <Image
+                                    key={src}
+                                    src={src}
+                                    alt={`${product.name} ${i + 1}`}
+                                    fill
+                                    className={cn(
+                                        "object-contain p-12 transition-opacity duration-200",
+                                        i === selectedImageIndex ? "opacity-100 z-10" : "opacity-0 absolute inset-0"
+                                    )}
+                                    sizes="(max-width: 1024px) 100vw, 50vw"
+                                    priority={i === 0}
+                                    loading={i === 0 ? undefined : "lazy"}
+                                />
+                            ))}
                             {discount && (
-                                <div className="absolute top-4 left-4">
+                                <div className="absolute top-4 left-4 z-20">
                                     <Badge variant="destructive" className="text-sm px-3 py-1">
                                         -{discount}% OFF
                                     </Badge>
                                 </div>
                             )}
                         </div>
+                        {galleryImages.length > 1 && (
+                            <div className="flex gap-2 mt-3">
+                                {galleryImages.map((src, i) => (
+                                    <button
+                                        key={src}
+                                        type="button"
+                                        onClick={() => setSelectedImageIndex(i)}
+                                        className={cn(
+                                            "relative w-14 h-14 rounded-xl overflow-hidden border-2 flex-shrink-0 transition-all bg-[hsl(var(--muted))]",
+                                            i === selectedImageIndex
+                                                ? "border-[hsl(var(--primary))] ring-2 ring-[hsl(var(--primary)/0.3)]"
+                                                : "border-[hsl(var(--border))] hover:border-[hsl(var(--primary)/0.5)]"
+                                        )}
+                                    >
+                                        <Image
+                                            src={src}
+                                            alt=""
+                                            fill
+                                            className="object-contain p-1"
+                                            sizes="56px"
+                                            loading="lazy"
+                                        />
+                                    </button>
+                                ))}
+                            </div>
+                        )}
 
                         {/* Trust badges */}
                         <div className="grid grid-cols-3 gap-3 mt-4">
@@ -269,6 +305,11 @@ export default function ProductDetailClient({ product, related }: Props) {
                         </div>
                     </div>
                 </div>
+
+                {/* In action — Golden Glow: two images combined */}
+                {product.slug === "golden-glow-face-care" && (
+                    <ProductInActionSection variant="page" productSlug={product.slug} productName={product.name} />
+                )}
 
                 {/* Related products */}
                 <div className="mt-20 pt-12 border-t">

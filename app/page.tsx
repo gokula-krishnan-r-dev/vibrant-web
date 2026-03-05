@@ -3,13 +3,14 @@
 import { useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, ArrowLeft, ChevronRight, Sparkles, Star, ShoppingCart, Check } from "lucide-react";
+import { ArrowRight, ArrowLeft, ChevronRight, Sparkles, Star, ShoppingCart, Check, Shield, Leaf, FlaskConical, Zap } from "lucide-react";
 import { useState } from "react";
 import { products } from "@/lib/products";
 import { useCartStore } from "@/store/cart";
 import { cn, formatPrice } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import ProductInActionSection from "@/components/sections/ProductInActionSection";
 
 // ─── Testimonials data ────────────────────────────────────────────
 const testimonials = [
@@ -42,50 +43,50 @@ function CarouselCard({ product }: { product: (typeof products)[0] }) {
   };
 
   return (
-    <Link href={`/products/${product.slug}`} className="group block w-[270px] shrink-0">
-      <div className="rounded-2xl border bg-[hsl(var(--card))] overflow-hidden product-card hover:shadow-xl transition-all duration-300">
-        {/* Image */}
-        <div className="relative bg-[hsl(var(--muted))] overflow-hidden" style={{ height: 220 }}>
+    <Link href={`/products/${product.slug}`} className="group block w-[260px] shrink-0">
+      <div className="rounded-2xl border border-[hsl(var(--border))] bg-[hsl(var(--card))] overflow-hidden transition-colors duration-200 hover:border-[hsl(var(--border)/0.6)]">
+        {/* Image zone */}
+        <div className="relative bg-[hsl(var(--secondary))] overflow-hidden flex items-center justify-center" style={{ height: 210 }}>
           {product.badge && (
             <div className="absolute top-3 left-3 z-10">
-              <Badge className="text-[10px] px-2 shadow-sm">{product.badge}</Badge>
+              <Badge className="text-[10px] px-2 py-0.5 font-semibold">{product.badge}</Badge>
             </div>
           )}
           {product.originalPrice && (
             <div className="absolute top-3 right-3 z-10">
-              <Badge variant="destructive" className="text-[10px] px-2">
+              <Badge variant="destructive" className="text-[10px] px-2 py-0.5">
                 -{Math.round((1 - product.price / product.originalPrice) * 100)}%
               </Badge>
             </div>
           )}
-          <div className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity bg-[hsl(var(--primary))]" />
           <Image
             src={product.image}
             alt={product.name}
             fill
-            className="object-contain p-5 group-hover:scale-105 transition-transform duration-500"
-            sizes="270px"
+            className="object-contain object-center p-6"
+            sizes="260px"
           />
         </div>
+
         {/* Content */}
-        <div className="p-4">
+        <div className="p-4 border-t border-[hsl(var(--border))]">
           <p className="text-[10px] uppercase tracking-widest text-[hsl(var(--muted-foreground))] font-semibold mb-1">{product.category}</p>
-          <h3 className="font-bold text-sm mb-0.5 group-hover:text-[hsl(var(--primary))] transition-colors line-clamp-1">{product.name}</h3>
-          <p className="text-xs text-[hsl(var(--muted-foreground))] mb-3 line-clamp-1">{product.tagline}</p>
+          <h3 className="font-bold text-sm mb-0.5 line-clamp-1">{product.name}</h3>
+          <p className="text-xs text-[hsl(var(--muted-foreground))] mb-4 line-clamp-1">{product.tagline}</p>
           <div className="flex items-center justify-between gap-2">
-            <div>
+            <div className="flex items-baseline gap-1.5">
               <span className="font-bold text-sm">{formatPrice(product.price)}</span>
               {product.originalPrice && (
-                <span className="text-xs text-[hsl(var(--muted-foreground))] line-through ml-1">{formatPrice(product.originalPrice)}</span>
+                <span className="text-xs text-[hsl(var(--muted-foreground))] line-through">{formatPrice(product.originalPrice)}</span>
               )}
             </div>
             <button
               onClick={handleAdd}
               className={cn(
-                "flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-lg transition-all duration-300",
+                "flex items-center gap-1.5 text-xs font-semibold px-3.5 py-1.5 rounded-lg transition-all duration-200",
                 added
                   ? "bg-emerald-500 text-white"
-                  : "bg-[hsl(var(--primary))] text-white hover:bg-[hsl(var(--primary))/0.9]"
+                  : "bg-[hsl(var(--primary))] text-white hover:opacity-90 active:scale-95"
               )}
             >
               {added ? <Check className="w-3 h-3" /> : <ShoppingCart className="w-3 h-3" />}
@@ -182,97 +183,186 @@ export default function HomePage() {
     <div ref={pageRef} className="overflow-hidden">
 
       {/* ── HERO SECTION ─────────────────────────────────── */}
-      <section className="relative min-h-[calc(100vh-80px)] flex items-center overflow-hidden">
-        {/* Background gradients */}
-        <div className="hero-blob-1 absolute top-[-10%] right-[-5%] w-[600px] h-[600px] rounded-full bg-[hsl(152_60%_28%/0.12)] blur-3xl pointer-events-none" />
-        <div className="hero-blob-2 absolute bottom-[-10%] left-[-5%] w-[500px] h-[500px] rounded-full bg-[hsl(230_75%_35%/0.09)] blur-3xl pointer-events-none" />
+      <section className="relative min-h-[calc(100vh-80px)] flex items-center overflow-hidden bg-[hsl(var(--background))]">
+        {/* Mesh background blobs */}
+        <div className="hero-blob-1 absolute top-[-15%] right-[-8%] w-[700px] h-[700px] rounded-full bg-[hsl(152_60%_28%/0.10)] blur-[100px] pointer-events-none" />
+        <div className="hero-blob-2 absolute bottom-[-20%] left-[-10%] w-[600px] h-[600px] rounded-full bg-[hsl(230_75%_35%/0.08)] blur-[120px] pointer-events-none" />
+        <div className="absolute top-[30%] left-[40%] w-[400px] h-[400px] rounded-full bg-[hsl(270_65%_45%/0.05)] blur-[80px] pointer-events-none" />
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-16 lg:py-24">
-          <div className="grid lg:grid-cols-[1fr_1fr] gap-12 xl:gap-20 items-center">
+        {/* Subtle grid overlay */}
+        <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: "linear-gradient(hsl(var(--border)/0.4) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--border)/0.4) 1px, transparent 1px)", backgroundSize: "60px 60px", maskImage: "radial-gradient(ellipse at center, transparent 20%, black 100%)" }} />
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-16 lg:py-20">
+          <div className="grid lg:grid-cols-[55%_45%] gap-10 xl:gap-16 items-center">
+
             {/* ── Left Copy ── */}
-            <div>
-              <div ref={heroBadgeRef} className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border bg-[hsl(var(--surface-2))] text-xs font-semibold text-[hsl(var(--muted-foreground))] mb-7 opacity-0">
-                <Sparkles className="w-3.5 h-3.5 text-[hsl(var(--primary))]" />
-                Premium Wellness Products by Vibrant
+            <div className="relative z-10">
+              {/* Eyebrow badge */}
+              <div ref={heroBadgeRef} className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[hsl(var(--primary)/0.3)] bg-[hsl(152_60%_28%/0.08)] text-xs font-semibold text-[hsl(var(--primary))] mb-6 opacity-0">
+                <span className="w-1.5 h-1.5 rounded-full bg-[hsl(var(--primary))] animate-pulse" />
+                Trusted by 50,000+ Customers Across India
               </div>
 
-              <h1 ref={heroTitleRef} className="text-[clamp(3rem,6vw,5.5rem)] font-black leading-[1.04] tracking-tight mb-7 opacity-0">
-                Feel Your{" "}
-                <span className="relative">
-                  <span className="gradient-text">Best</span>
-                </span>
-                <br />Every Single Day.
+              {/* Main headline */}
+              <h1 ref={heroTitleRef} className="text-[clamp(2.6rem,5.5vw,5rem)] font-black leading-[1.05] tracking-tight mb-6 opacity-0">
+                Your Daily Dose of{" "}
+                <span className="relative inline-block">
+                  <span className="gradient-text">Wellness</span>
+                  <svg className="absolute -bottom-1 left-0 w-full" height="6" viewBox="0 0 200 6" fill="none" preserveAspectRatio="none">
+                    <path d="M0 5 Q50 0 100 4 Q150 8 200 3" stroke="hsl(var(--primary))" strokeWidth="2.5" strokeLinecap="round" fill="none" opacity="0.6" />
+                  </svg>
+                </span>,{" "}<br />
+                <span className="text-[hsl(var(--muted-foreground))] font-light italic">Backed by Science.</span>
               </h1>
 
-              <p ref={heroSubRef} className="text-lg text-[hsl(var(--muted-foreground))] leading-relaxed max-w-lg mb-9 opacity-0">
-                Science-backed wellness and beauty products crafted with advanced Liposomal Technology
-                for superior bioavailability — so you feel the difference from day one.
+              {/* Sub copy */}
+              <p ref={heroSubRef} className="text-base lg:text-lg text-[hsl(var(--muted-foreground))] leading-relaxed max-w-xl mb-8 opacity-0">
+                Advanced Liposomal Technology for superior bioavailability — premium wellness and beauty products crafted to make you feel the difference from day one.
               </p>
 
-              <div ref={heroCtaRef} className="flex flex-wrap items-center gap-4 mb-14 opacity-0">
+              {/* CTAs */}
+              <div ref={heroCtaRef} className="flex flex-wrap items-center gap-3 mb-10 opacity-0">
                 <Link href="/products"
-                  className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl bg-[hsl(var(--primary))] text-white font-semibold text-sm hover:-translate-y-1 transition-all shadow-lg shadow-[hsl(152_60%_28%/0.3)]">
-                  Shop the Collection <ArrowRight className="w-4 h-4" />
+                  className="group inline-flex items-center gap-2.5 px-8 py-4 rounded-2xl bg-[hsl(var(--primary))] text-white font-bold text-sm hover:-translate-y-1 active:translate-y-0 transition-all duration-200 shadow-xl shadow-[hsl(152_60%_28%/0.35)]">
+                  Shop the Collection
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
                 </Link>
                 <Link href="#bestsellers"
-                  className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl border font-semibold text-sm hover:bg-[hsl(var(--muted))] transition-all">
-                  Bestsellers ↓
+                  className="inline-flex items-center gap-2 px-8 py-4 rounded-2xl border-2 font-bold text-sm hover:bg-[hsl(var(--muted))] hover:border-[hsl(var(--primary)/0.3)] transition-all duration-200">
+                  <Sparkles className="w-3.5 h-3.5 text-[hsl(var(--primary))]" />
+                  View Bestsellers
                 </Link>
               </div>
 
-              {/* Stats row */}
-              <div className="grid grid-cols-4 gap-3">
-                {stats.map((s) => (
-                  <div key={s.label} className="text-center p-3 rounded-xl border bg-[hsl(var(--card))]">
-                    <div className="font-black text-xl text-[hsl(var(--foreground))]">{s.value}</div>
-                    <div className="text-[10px] text-[hsl(var(--muted-foreground))] mt-0.5 leading-tight">{s.label}</div>
+              {/* Trust bar */}
+              <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
+                {[
+                  { icon: <Shield className="w-4 h-4" />, label: "100% Natural" },
+                  { icon: <FlaskConical className="w-4 h-4" />, label: "Clinically Tested" },
+                  { icon: <Leaf className="w-4 h-4" />, label: "No Harmful Chemicals" },
+                  { icon: <Zap className="w-4 h-4" />, label: "Fast Absorption" },
+                ].map((t) => (
+                  <div key={t.label} className="flex items-center gap-1.5 text-xs font-semibold text-[hsl(var(--muted-foreground))]">
+                    <span className="text-[hsl(var(--primary))]">{t.icon}</span>
+                    {t.label}
                   </div>
                 ))}
               </div>
-            </div>
 
-            {/* ── Right Showcase ── */}
-            <div ref={heroImageRef} className="opacity-0 relative">
-              {/* Main featured card */}
-              <div className="relative rounded-3xl overflow-hidden border bg-gradient-to-br from-[hsl(152_60%_28%/0.08)] to-[hsl(var(--card))] p-8 shadow-2xl">
-                <div className="aspect-square relative">
-                  <Image
-                    src="/images/essentia-of-life.jpg"
-                    alt="Essentia of Life"
-                    fill
-                    className="object-contain drop-shadow-2xl animate-float"
-                    priority
-                    sizes="(max-width: 1024px) 100vw, 45vw"
-                  />
+              {/* Social proof strip */}
+              <div className="mt-8 flex items-center gap-4 pt-6 border-t">
+                <div className="flex -space-x-2">
+                  {["PS", "AM", "DR", "SK", "VR"].map((av) => (
+                    <div key={av} className="w-8 h-8 rounded-full bg-gradient-to-br from-[hsl(152_60%_35%)] to-[hsl(152_60%_22%)] border-2 border-[hsl(var(--background))] flex items-center justify-center text-white text-[9px] font-bold shrink-0">
+                      {av}
+                    </div>
+                  ))}
                 </div>
-                {/* Floating info card */}
-                <div className="absolute bottom-4 left-4 right-4 glass rounded-2xl p-4 border">
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <p className="font-bold text-sm">Essentia of Life</p>
-                      <p className="text-[hsl(var(--muted-foreground))] text-xs">Anti-Oxidant Liquid</p>
-                      <div className="flex items-center gap-1 mt-1">
-                        {[...Array(5)].map((_, i) => <Star key={i} className="w-3 h-3 fill-amber-400 text-amber-400" />)}
-                        <span className="text-[10px] text-[hsl(var(--muted-foreground))] ml-1">5.0</span>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <p className="font-black text-base text-[hsl(var(--primary))]">₹1,145.55</p>
-                      <p className="line-through text-xs text-[hsl(var(--muted-foreground))]">₹1,499</p>
-                    </div>
+                <div>
+                  <div className="flex items-center gap-0.5 mb-0.5">
+                    {[...Array(5)].map((_, i) => <Star key={i} className="w-3 h-3 fill-amber-400 text-amber-400" />)}
+                    <span className="text-xs font-bold ml-1">4.9</span>
+                  </div>
+                  <p className="text-[11px] text-[hsl(var(--muted-foreground))]">from 2,400+ verified reviews</p>
+                </div>
+                <div className="ml-auto hidden sm:block">
+                  <div className="text-right">
+                    <p className="text-2xl font-black text-[hsl(var(--foreground))]">50K+</p>
+                    <p className="text-[10px] text-[hsl(var(--muted-foreground))] uppercase tracking-wider">Happy Customers</p>
                   </div>
                 </div>
               </div>
-              {/* Side mini cards */}
-              <div className="absolute -right-4 top-8 glass rounded-2xl p-3 border shadow-lg w-36">
-                <Image src="/images/sleep-button.jpg" alt="Sleep Button" width={80} height={60} className="object-contain mx-auto mb-2" />
-                <p className="font-semibold text-xs text-center">Sleep Button</p>
-                <p className="text-[hsl(var(--primary))] font-bold text-xs text-center">₹1,593</p>
-              </div>
-              <div className="absolute -left-4 bottom-24 glass rounded-2xl p-3 border shadow-lg w-36">
-                <Image src="/images/golden-glow.jpg" alt="Golden Glow" width={80} height={60} className="object-contain mx-auto mb-2" />
-                <p className="font-semibold text-xs text-center">Golden Glow</p>
-                <p className="text-[hsl(var(--primary))] font-bold text-xs text-center">₹999</p>
+            </div>
+
+            {/* ── Right Product Visual Stack ── */}
+            <div ref={heroImageRef} className="opacity-0 relative hidden lg:block">
+              {/* Background decorative ring */}
+              <div className="absolute inset-0 m-auto w-[85%] aspect-square rounded-full border border-[hsl(var(--primary)/0.1)] border-dashed" />
+              <div className="absolute inset-0 m-auto w-[70%] aspect-square rounded-full border border-[hsl(var(--primary)/0.07)] border-dashed" />
+
+              {/* Main hero product card */}
+              <div className="relative mx-auto max-w-[380px]">
+                <div className="relative rounded-[2rem] overflow-hidden border-2 border-[hsl(var(--border))] bg-gradient-to-b from-[hsl(152_60%_28%/0.06)] via-[hsl(var(--card))] to-[hsl(var(--card))] shadow-2xl shadow-[hsl(152_60%_28%/0.15)] p-6">
+                  {/* Discount badge on card */}
+                  <div className="absolute top-5 right-5 w-14 h-14 rounded-full bg-[hsl(var(--primary))] flex flex-col items-center justify-center shadow-lg">
+                    <span className="text-white font-black text-sm leading-none">24%</span>
+                    <span className="text-white/80 text-[9px] font-semibold">OFF</span>
+                  </div>
+
+                  {/* Tag */}
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[hsl(152_60%_28%/0.12)] text-[hsl(var(--primary))] text-[10px] font-bold uppercase tracking-wider mb-4">
+                    <Sparkles className="w-3 h-3" /> #1 Bestseller
+                  </div>
+
+                  {/* Product image */}
+                  <div className="relative aspect-[4/3.5] flex items-center justify-center">
+                    <Image
+                      src="/images/essentia-of-life.jpg"
+                      alt="Essentia of Life"
+                      fill
+                      className="object-contain drop-shadow-2xl animate-float"
+                      priority
+                      sizes="380px"
+                    />
+                  </div>
+
+                  {/* Product info */}
+                  <div className="mt-4 flex items-end justify-between">
+                    <div>
+                      <p className="font-black text-base">Essentia of Life</p>
+                      <p className="text-[hsl(var(--muted-foreground))] text-xs mb-2">Anti-Oxidant Liquid • 30ml</p>
+                      <div className="flex items-center gap-1">
+                        {[...Array(5)].map((_, i) => <Star key={i} className="w-3 h-3 fill-amber-400 text-amber-400" />)}
+                        <span className="text-xs text-[hsl(var(--muted-foreground))] ml-1">(312)</span>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-[hsl(var(--muted-foreground))] text-xs line-through">₹1,499</p>
+                      <p className="font-black text-xl text-[hsl(var(--primary))]">₹1,145</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Floating mini card — Sleep Button */}
+                <div className="absolute -right-10 top-12 glass rounded-2xl p-3 border-2 shadow-xl w-[130px] hover:-translate-y-1 transition-transform duration-300">
+                  <div className="relative h-14 mb-2">
+                    <Image src="/images/sleep-button.jpg" alt="Sleep Button" fill className="object-contain" sizes="100px" />
+                  </div>
+                  <p className="font-bold text-[11px] leading-tight">Sleep Button</p>
+                  <p className="text-[hsl(var(--primary))] font-black text-xs">₹1,593</p>
+                  <div className="flex items-center gap-0.5 mt-1">
+                    {[...Array(5)].map((_, i) => <Star key={i} className="w-2.5 h-2.5 fill-amber-400 text-amber-400" />)}
+                  </div>
+                </div>
+
+                {/* Floating mini card — Golden Glow */}
+                <div className="absolute -left-10 bottom-20 glass rounded-2xl p-3 border-2 shadow-xl w-[130px] hover:-translate-y-1 transition-transform duration-300">
+                  <div className="relative h-14 mb-2">
+                    <Image src="/images/golden-glow.jpg" alt="Golden Glow" fill className="object-contain" sizes="100px" />
+                  </div>
+                  <p className="font-bold text-[11px] leading-tight">Golden Glow</p>
+                  <p className="text-[hsl(var(--primary))] font-black text-xs">₹999</p>
+                  <div className="flex items-center gap-0.5 mt-1">
+                    {[...Array(5)].map((_, i) => <Star key={i} className="w-2.5 h-2.5 fill-amber-400 text-amber-400" />)}
+                  </div>
+                </div>
+
+                {/* Floating notification badge */}
+                <div className="absolute -top-4 left-8 glass flex items-center gap-2.5 px-3 py-2 rounded-xl border shadow-lg">
+                  <div className="w-7 h-7 rounded-full bg-emerald-500 flex items-center justify-center shrink-0">
+                    <Check className="w-3.5 h-3.5 text-white" />
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-bold leading-none">Order Placed!</p>
+                    <p className="text-[9px] text-[hsl(var(--muted-foreground))] mt-0.5">Priya just purchased</p>
+                  </div>
+                </div>
+
+                {/* Floating ingredient badge */}
+                <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 glass flex items-center gap-2 px-4 py-2.5 rounded-full border shadow-lg whitespace-nowrap">
+                  <Leaf className="w-3.5 h-3.5 text-emerald-500" />
+                  <span className="text-[11px] font-bold">100% Natural Ingredients</span>
+                </div>
               </div>
             </div>
           </div>
@@ -340,6 +430,11 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ── GOLDEN GLOW IN ACTION (two images in one section) ─ */}
+      <section className="reveal-up">
+        <ProductInActionSection variant="home" />
+      </section>
+
       {/* ── FEATURED BANNER ──────────────────────────────── */}
       <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <div className="grid lg:grid-cols-2 gap-6 reveal-up">
@@ -403,20 +498,23 @@ export default function HomePage() {
                 key={product.id}
                 href={`/products/${product.slug}`}
                 className={cn(
-                  "group relative rounded-2xl overflow-hidden border bg-[hsl(var(--card))] stagger-card",
+                  "group relative rounded-2xl overflow-hidden border bg-[hsl(var(--card))] stagger-card h-full",
                   i === 0 || i === 4 ? "row-span-2" : ""
                 )}
               >
-                <div className={cn("relative w-full overflow-hidden bg-[hsl(var(--muted))]", i === 0 || i === 4 ? "aspect-[3/4]" : "aspect-square")}>
+                <div
+                  className="relative w-full h-full overflow-hidden bg-[hsl(var(--muted))]"
+                  style={{ minHeight: i === 0 || i === 4 ? 360 : 200 }}
+                >
                   <Image
                     src={product.image}
                     alt={product.name}
                     fill
-                    className="object-contain p-4 group-hover:scale-108 transition-transform duration-500"
-                    sizes="300px"
+                    className="object-cover group-hover:scale-105 transition-transform duration-500"
+                    sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  <div className="absolute bottom-3 left-3 right-3 translate-y-3 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <div className="absolute bottom-3 left-3 right-3 translate-y-2 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-300">
                     <p className="text-white font-semibold text-sm">{product.name}</p>
                     <p className="text-white/75 text-xs">{formatPrice(product.price)}</p>
                   </div>

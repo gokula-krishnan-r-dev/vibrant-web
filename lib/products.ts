@@ -37,8 +37,8 @@ export const products: Product[] = [
         originalPrice: 1299,
         category: "Skin Care",
         badge: "Bestseller",
-        image: "/images/golden-glow.jpg",
-        images: ["/images/golden-glow.jpg"],
+        image: "/images/golden-glow-jar.png",
+        images: ["/images/golden-glow-jar.png", "/images/golden-glow-in-use.png"],
         variants: [
             { id: "v1", name: "Size", value: "50g" },
             { id: "v2", name: "Size", value: "100g" },
