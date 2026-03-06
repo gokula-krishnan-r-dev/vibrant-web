@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { X, Minus, Plus, ShoppingBag, ArrowRight, Trash2, Tag, MapPin, Banknote, CreditCard } from "lucide-react";
+import { X, Minus, Plus, ShoppingBag, ArrowRight, Trash2, Tag, MapPin, Banknote, CreditCard, Loader2, Check } from "lucide-react";
 import { useCartStore } from "@/store/cart";
 import { useLocationStore } from "@/store/location";
 import { Button } from "@/components/ui/button";
@@ -19,13 +19,80 @@ export default function CartSheet() {
     const removeItem = useCartStore((s) => s.removeItem);
     const updateQuantity = useCartStore((s) => s.updateQuantity);
     const totalPrice = useCartStore((s) => s.totalPrice());
-    const { city, fullAddress, displayMode } = useLocationStore();
+    const { city, fullAddress, pincode, displayMode, setLocation } = useLocationStore();
 
     const [mounted, setMounted] = useState(false);
     const [paymentMethod, setPaymentMethod] = useState<"cod" | "online">("cod");
+    const [editingAddress, setEditingAddress] = useState(false);
+    const [detectingLocation, setDetectingLocation] = useState(false);
+    const [locationError, setLocationError] = useState<string | null>(null);
+    const [formAddress, setFormAddress] = useState("");
+    const [formCity, setFormCity] = useState("");
+    const [formPincode, setFormPincode] = useState("");
+
     useEffect(() => setMounted(true), []);
 
     const deliveryLabel = displayMode === "full" && fullAddress ? fullAddress : city || null;
+
+    const openAddressForm = useCallback(() => {
+        setFormAddress(fullAddress || "");
+        setFormCity(city || "");
+        setFormPincode(pincode || "");
+        setLocationError(null);
+        setEditingAddress(true);
+    }, [fullAddress, city, pincode]);
+
+    const saveAddress = useCallback(() => {
+        const addr = formAddress.trim();
+        const c = formCity.trim();
+        const pin = formPincode.trim();
+        if (addr || c) {
+            setLocation({
+                fullAddress: addr || null,
+                city: c || (addr ? addr.split(",")[0].trim() : ""),
+                pincode: pin,
+            });
+            setEditingAddress(false);
+        }
+    }, [formAddress, formCity, formPincode, setLocation]);
+
+    const useMyLocation = useCallback(() => {
+        setLocationError(null);
+        setDetectingLocation(true);
+        if (!navigator.geolocation) {
+            setLocationError("Geolocation not supported");
+            setDetectingLocation(false);
+            return;
+        }
+        navigator.geolocation.getCurrentPosition(
+            async (pos) => {
+                try {
+                    const { latitude, longitude } = pos.coords;
+                    const res = await fetch(
+                        `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`,
+                        { headers: { Accept: "application/json" } }
+                    );
+                    const data = await res.json();
+                    const cityName = data.address?.city || data.address?.town || data.address?.state_district || data.address?.state || "";
+                    const pincode = data.address?.postcode || "";
+                    setLocation({ city: cityName, pincode, fullAddress: data.display_name || null });
+                    setFormCity(cityName);
+                    setFormPincode(pincode);
+                    setFormAddress(data.display_name || "");
+                    setEditingAddress(false);
+                } catch {
+                    setLocationError("Could not get address");
+                } finally {
+                    setDetectingLocation(false);
+                }
+            },
+            () => {
+                setLocationError("Location access denied");
+                setDetectingLocation(false);
+            },
+            { timeout: 10000 }
+        );
+    }, [setLocation]);
 
     if (!mounted) return null;
 
@@ -172,22 +239,70 @@ export default function CartSheet() {
 
                         {/* Footer */}
                         <div className="border-t px-6 py-5 space-y-4 bg-[hsl(var(--surface-2))]">
-                            {/* Deliver to */}
+                            {/* Deliver to / Address selector */}
                             <div className="rounded-xl border bg-[hsl(var(--background))] p-3">
                                 <div className="flex items-start gap-2">
                                     <MapPin className="w-4 h-4 text-[hsl(var(--primary))] shrink-0 mt-0.5" />
                                     <div className="min-w-0 flex-1">
-                                        <p className="text-[10px] uppercase tracking-wider text-[hsl(var(--muted-foreground))] font-semibold mb-0.5">Deliver to</p>
-                                        <p className="text-sm text-[hsl(var(--foreground))] line-clamp-2">
-                                            {deliveryLabel || "Add address in header"}
-                                        </p>
-                                        <button
-                                            type="button"
-                                            onClick={closeCart}
-                                            className="text-xs font-medium text-[hsl(var(--primary))] hover:underline mt-1"
-                                        >
-                                            Change
-                                        </button>
+                                        <p className="text-[10px] uppercase tracking-wider text-[hsl(var(--muted-foreground))] font-semibold mb-1.5">Deliver to</p>
+                                        {!editingAddress ? (
+                                            <>
+                                                <p className="text-sm text-[hsl(var(--foreground))] line-clamp-2">
+                                                    {deliveryLabel || "No address selected"}
+                                                </p>
+                                                <button
+                                                    type="button"
+                                                    onClick={openAddressForm}
+                                                    className="text-xs font-medium text-[hsl(var(--primary))] hover:underline mt-1"
+                                                >
+                                                    {deliveryLabel ? "Change address" : "Select address"}
+                                                </button>
+                                            </>
+                                        ) : (
+                                            <div className="space-y-2.5">
+                                                <input
+                                                    type="text"
+                                                    placeholder="Full address"
+                                                    value={formAddress}
+                                                    onChange={(e) => setFormAddress(e.target.value)}
+                                                    className="w-full px-3 py-2 rounded-lg border border-[hsl(var(--border))] bg-[hsl(var(--background))] text-sm outline-none focus:ring-2 focus:ring-[hsl(var(--primary)/0.3)]"
+                                                />
+                                                <div className="grid grid-cols-2 gap-2">
+                                                    <input
+                                                        type="text"
+                                                        placeholder="City"
+                                                        value={formCity}
+                                                        onChange={(e) => setFormCity(e.target.value)}
+                                                        className="w-full px-3 py-2 rounded-lg border border-[hsl(var(--border))] bg-[hsl(var(--background))] text-sm outline-none focus:ring-2 focus:ring-[hsl(var(--primary)/0.3)]"
+                                                    />
+                                                    <input
+                                                        type="text"
+                                                        placeholder="Pincode"
+                                                        value={formPincode}
+                                                        onChange={(e) => setFormPincode(e.target.value)}
+                                                        className="w-full px-3 py-2 rounded-lg border border-[hsl(var(--border))] bg-[hsl(var(--background))] text-sm outline-none focus:ring-2 focus:ring-[hsl(var(--primary)/0.3)]"
+                                                    />
+                                                </div>
+                                                <button
+                                                    type="button"
+                                                    onClick={useMyLocation}
+                                                    disabled={detectingLocation}
+                                                    className="w-full flex items-center justify-center gap-2 py-2 rounded-lg border border-[hsl(var(--border))] text-xs font-medium hover:bg-[hsl(var(--muted))] transition-colors disabled:opacity-60"
+                                                >
+                                                    {detectingLocation ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <MapPin className="w-3.5 h-3.5" />}
+                                                    {detectingLocation ? "Detecting…" : "Use my current location"}
+                                                </button>
+                                                {locationError && <p className="text-xs text-red-500">{locationError}</p>}
+                                                <div className="flex gap-2">
+                                                    <Button size="sm" className="flex-1 gap-1" onClick={saveAddress}>
+                                                        <Check className="w-3.5 h-3.5" /> Save
+                                                    </Button>
+                                                    <Button size="sm" variant="outline" onClick={() => setEditingAddress(false)}>
+                                                        Cancel
+                                                    </Button>
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             </div>
