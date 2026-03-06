@@ -197,6 +197,14 @@ export default function HomePage() {
 
             {/* ── Left Copy ── */}
             <div className="relative z-10">
+              {/* Vibrant Leaders CTA */}
+              <Link
+                href="/vibrant-leaders"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full border-2 border-amber-500/50 bg-amber-500/10 text-amber-700 dark:text-amber-400 font-bold text-xs uppercase tracking-wider mb-4 hover:bg-amber-500/20 hover:border-amber-500/70 transition-all duration-200 hover:-translate-y-0.5"
+              >
+                <Sparkles className="w-3.5 h-3.5" />
+                Vibrant Leaders — ₹100 off every order
+              </Link>
               {/* Eyebrow badge */}
               <div ref={heroBadgeRef} className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[hsl(var(--primary)/0.3)] bg-[hsl(152_60%_28%/0.08)] text-xs font-semibold text-[hsl(var(--primary))] mb-6 opacity-0">
                 <span className="w-1.5 h-1.5 rounded-full bg-[hsl(var(--primary))] animate-pulse" />

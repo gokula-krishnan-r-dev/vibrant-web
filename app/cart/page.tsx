@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Minus, Plus, Trash2, ShoppingBag, ArrowRight, Tag } from "lucide-react";
+import { Minus, Plus, Trash2, ShoppingBag, ArrowRight, Tag, BadgeCheck } from "lucide-react";
 import { useCartStore } from "@/store/cart";
+import { useLeaderStore, LEADER_DISCOUNT } from "@/store/leader";
 import { Button } from "@/components/ui/button";
 import { cn, formatPrice } from "@/lib/utils";
 
@@ -16,9 +17,11 @@ export default function CartPage() {
     const updateQuantity = useCartStore((s) => s.updateQuantity);
     const clearCart = useCartStore((s) => s.clearCart);
     const total = useCartStore((s) => s.totalPrice());
+    const isLeader = useLeaderStore((s) => s.isLeader);
 
     const shipping = total >= SHIPPING_THRESHOLD ? 0 : SHIPPING_COST;
-    const grandTotal = total + shipping;
+    const leaderDiscount = isLeader ? LEADER_DISCOUNT : 0;
+    const grandTotal = Math.max(0, total + shipping - leaderDiscount);
     const freeShippingRemaining = Math.max(0, SHIPPING_THRESHOLD - total);
 
     if (items.length === 0) {
@@ -181,6 +184,15 @@ export default function CartPage() {
                                         {shipping === 0 ? "FREE" : formatPrice(shipping)}
                                     </span>
                                 </div>
+                                {isLeader && (
+                                    <div className="flex justify-between text-sm text-amber-600 dark:text-amber-400">
+                                        <span className="flex items-center gap-1.5">
+                                            <BadgeCheck className="w-4 h-4" />
+                                            Vibrant Leader discount
+                                        </span>
+                                        <span className="font-semibold">−{formatPrice(LEADER_DISCOUNT)}</span>
+                                    </div>
+                                )}
                                 <div className="border-t pt-3 flex justify-between">
                                     <span className="font-bold">Total</span>
                                     <span className="font-black text-xl">{formatPrice(grandTotal)}</span>

@@ -13,6 +13,8 @@ import { cn, formatPrice } from "@/lib/utils";
 interface ProductCardProps {
     product: Product;
     className?: string;
+    /** When set, show leader price (price - discount) and a leader badge */
+    leaderDiscount?: number;
 }
 
 // Color map for category-based accent colors
@@ -23,7 +25,7 @@ const categoryColors: Record<string, string> = {
     Wellness: "#60a5fa",
 };
 
-export default function ProductCard({ product, className }: ProductCardProps) {
+export default function ProductCard({ product, className, leaderDiscount }: ProductCardProps) {
     const [added, setAdded] = useState(false);
     const addItem = useCartStore((s) => s.addItem);
     const openCart = useCartStore((s) => s.openCart);
@@ -57,6 +59,11 @@ export default function ProductCard({ product, className }: ProductCardProps) {
             >
                 {/* Badges */}
                 <div className="absolute top-3 left-3 z-10 flex flex-col gap-1.5">
+                    {leaderDiscount !== undefined && (
+                        <Badge className="text-[10px] px-2 py-0.5 font-semibold shadow-sm bg-amber-500 text-white border-0">
+                            Leader −₹{leaderDiscount}
+                        </Badge>
+                    )}
                     {product.badge && (
                         <Badge className="text-[10px] px-2 py-0.5 font-semibold shadow-sm">
                             {product.badge}
@@ -116,13 +123,26 @@ export default function ProductCard({ product, className }: ProductCardProps) {
                     {/* Price + CTA */}
                     <div className="flex items-center justify-between gap-2">
                         <div>
-                            <span className="font-bold text-lg text-[hsl(var(--foreground))]">
-                                {formatPrice(product.price)}
-                            </span>
-                            {product.originalPrice && (
-                                <span className="text-xs text-[hsl(var(--muted-foreground))] line-through ml-1.5">
-                                    {formatPrice(product.originalPrice)}
-                                </span>
+                            {leaderDiscount !== undefined ? (
+                                <>
+                                    <span className="font-bold text-lg text-amber-600 dark:text-amber-400">
+                                        {formatPrice(product.price - leaderDiscount)}
+                                    </span>
+                                    <span className="text-xs text-[hsl(var(--muted-foreground))] line-through ml-1.5">
+                                        {formatPrice(product.price)}
+                                    </span>
+                                </>
+                            ) : (
+                                <>
+                                    <span className="font-bold text-lg text-[hsl(var(--foreground))]">
+                                        {formatPrice(product.price)}
+                                    </span>
+                                    {product.originalPrice && (
+                                        <span className="text-xs text-[hsl(var(--muted-foreground))] line-through ml-1.5">
+                                            {formatPrice(product.originalPrice)}
+                                        </span>
+                                    )}
+                                </>
                             )}
                         </div>
                         <Button
