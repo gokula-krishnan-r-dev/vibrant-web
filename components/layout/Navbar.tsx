@@ -382,11 +382,11 @@ export default function Navbar() {
                         <div className="flex-1">
                             <Link href="/" className="inline-flex items-center">
                                 <Image
-                                    src="/vibrant-logo.svg"
+                                    src="/vibrant-logo.png"
                                     alt="Vibrant"
                                     width={96}
                                     height={44}
-                                    className="h-9 w-auto dark:invert"
+                                    className="h-9 w-auto invert dark:invert-0"
                                     priority
                                 />
                             </Link>

@@ -381,6 +381,50 @@ export default function HomePage() {
         </div>
       </div>
 
+      {/* ── LANDING PAGE SHOWCASE (all product images) ───── */}
+      <section id="showcase" className="section-padding bg-[hsl(var(--surface-2))]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-10 reveal-up">
+            <p className="text-xs font-bold text-[hsl(var(--primary))] uppercase tracking-[0.2em] mb-2">Gallery</p>
+            <h2 className="text-4xl lg:text-5xl font-black tracking-tight">
+              Product <span className="italic font-light text-[hsl(var(--muted-foreground))]">Showcase</span>
+            </h2>
+            <p className="mt-3 text-[hsl(var(--muted-foreground))] text-sm max-w-xl mx-auto">
+              Our wellness range in focus — from the bottle to the moment you use it.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-6 reveal-up">
+            {[
+              { src: "/images/relax-rubb-in-use.png", alt: "Relax Rubb foot massage cream in use", href: "/products/relax-rubb", label: "Relax Rubb" },
+              { src: "/images/relax-rubb-product.png", alt: "Relax Rubb foot massage cream", href: "/products/relax-rubb", label: "Relax Rubb" },
+              { src: "/images/sleep-button-showcase.png", alt: "Sleep Button daily oral spray", href: "/products/sleep-button", label: "Sleep Button" },
+              { src: "/images/d-fume-showcase.png", alt: "D Fume Vitamin D3 cream", href: "/products/d-fume", label: "D Fume" },
+              { src: "/images/essentia-woman.png", alt: "Essentia of Life antioxidant liquid", href: "/products/essentia-of-life", label: "Essentia of Life" },
+              { src: "/images/essentia-box.png", alt: "Essentia of Life product box", href: "/products/essentia-of-life", label: "Essentia of Life" },
+            ].map((item) => (
+              <Link
+                key={item.src}
+                href={item.href}
+                className="group relative rounded-2xl overflow-hidden border bg-[hsl(var(--card))] aspect-[4/3] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--primary))]"
+              >
+                <Image
+                  src={item.src}
+                  alt={item.alt}
+                  fill
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  loading="lazy"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <span className="absolute bottom-3 left-3 right-3 text-white font-semibold text-sm translate-y-2 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                  {item.label} <ArrowRight className="w-3.5 h-3.5 inline-block ml-1" />
+                </span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ── BESTSELLERS CAROUSEL ─────────────────────────── */}
       <section id="bestsellers" className="section-padding">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

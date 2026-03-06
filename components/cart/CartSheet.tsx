@@ -3,8 +3,9 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { X, Minus, Plus, ShoppingBag, ArrowRight, Trash2, Tag } from "lucide-react";
+import { X, Minus, Plus, ShoppingBag, ArrowRight, Trash2, Tag, MapPin, Banknote, CreditCard } from "lucide-react";
 import { useCartStore } from "@/store/cart";
+import { useLocationStore } from "@/store/location";
 import { Button } from "@/components/ui/button";
 import { cn, formatPrice } from "@/lib/utils";
 
@@ -18,9 +19,13 @@ export default function CartSheet() {
     const removeItem = useCartStore((s) => s.removeItem);
     const updateQuantity = useCartStore((s) => s.updateQuantity);
     const totalPrice = useCartStore((s) => s.totalPrice());
+    const { city, fullAddress, displayMode } = useLocationStore();
 
     const [mounted, setMounted] = useState(false);
+    const [paymentMethod, setPaymentMethod] = useState<"cod" | "online">("cod");
     useEffect(() => setMounted(true), []);
+
+    const deliveryLabel = displayMode === "full" && fullAddress ? fullAddress : city || null;
 
     if (!mounted) return null;
 
@@ -167,6 +172,65 @@ export default function CartSheet() {
 
                         {/* Footer */}
                         <div className="border-t px-6 py-5 space-y-4 bg-[hsl(var(--surface-2))]">
+                            {/* Deliver to */}
+                            <div className="rounded-xl border bg-[hsl(var(--background))] p-3">
+                                <div className="flex items-start gap-2">
+                                    <MapPin className="w-4 h-4 text-[hsl(var(--primary))] shrink-0 mt-0.5" />
+                                    <div className="min-w-0 flex-1">
+                                        <p className="text-[10px] uppercase tracking-wider text-[hsl(var(--muted-foreground))] font-semibold mb-0.5">Deliver to</p>
+                                        <p className="text-sm text-[hsl(var(--foreground))] line-clamp-2">
+                                            {deliveryLabel || "Add address in header"}
+                                        </p>
+                                        <button
+                                            type="button"
+                                            onClick={closeCart}
+                                            className="text-xs font-medium text-[hsl(var(--primary))] hover:underline mt-1"
+                                        >
+                                            Change
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Payment */}
+                            <div className="rounded-xl border bg-[hsl(var(--background))] p-3">
+                                <p className="text-[10px] uppercase tracking-wider text-[hsl(var(--muted-foreground))] font-semibold mb-2">Payment</p>
+                                <div className="space-y-1.5">
+                                    <label className={cn(
+                                        "flex items-center gap-3 p-2.5 rounded-lg border cursor-pointer transition-colors",
+                                        paymentMethod === "cod"
+                                            ? "border-[hsl(var(--primary))] bg-[hsl(var(--primary)/0.06)]"
+                                            : "border-[hsl(var(--border))] hover:bg-[hsl(var(--muted)/0.5)]"
+                                    )}>
+                                        <input
+                                            type="radio"
+                                            name="payment"
+                                            checked={paymentMethod === "cod"}
+                                            onChange={() => setPaymentMethod("cod")}
+                                            className="sr-only"
+                                        />
+                                        <Banknote className="w-4 h-4 text-[hsl(var(--primary))] shrink-0" />
+                                        <span className="text-sm font-medium">Cash on Delivery</span>
+                                    </label>
+                                    <label className={cn(
+                                        "flex items-center gap-3 p-2.5 rounded-lg border cursor-pointer transition-colors",
+                                        paymentMethod === "online"
+                                            ? "border-[hsl(var(--primary))] bg-[hsl(var(--primary)/0.06)]"
+                                            : "border-[hsl(var(--border))] hover:bg-[hsl(var(--muted)/0.5)]"
+                                    )}>
+                                        <input
+                                            type="radio"
+                                            name="payment"
+                                            checked={paymentMethod === "online"}
+                                            onChange={() => setPaymentMethod("online")}
+                                            className="sr-only"
+                                        />
+                                        <CreditCard className="w-4 h-4 text-[hsl(var(--primary))] shrink-0" />
+                                        <span className="text-sm font-medium">Pay online</span>
+                                    </label>
+                                </div>
+                            </div>
+
                             {/* Coupon */}
                             <div className="flex gap-2">
                                 <div className="flex-1 flex items-center gap-2 px-3 py-2 rounded-lg border bg-[hsl(var(--background))]">

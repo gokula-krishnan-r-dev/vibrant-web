@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { Leaf, Instagram, Twitter, Facebook, Mail, Phone, MapPin } from "lucide-react";
+import Image from "next/image";
+import { Instagram, Twitter, Facebook, Mail, Phone, MapPin } from "lucide-react";
 
 const footerLinks = {
     Products: [
@@ -30,28 +31,34 @@ export default function Footer() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 lg:gap-8">
                     {/* Brand */}
                     <div className="lg:col-span-2">
-                        <Link href="/" className="flex items-center gap-2 mb-4">
-                            <div className="w-8 h-8 rounded-lg bg-[hsl(var(--primary))] flex items-center justify-center">
-                                <Leaf className="w-5 h-5 text-white" />
-                            </div>
-                            <span className="font-bold text-xl">Vibrant</span>
+                        <Link href="/" className="inline-flex items-center mb-4">
+                            <Image
+                                src="/vibrant-logo.png"
+                                alt="Vibrant"
+                                width={96}
+                                height={44}
+                                className="h-9 w-auto invert dark:invert-0"
+                            />
                         </Link>
                         <p className="text-sm text-[hsl(var(--muted-foreground))] leading-relaxed max-w-xs mb-6">
                             Crafting premium wellness and beauty products with advanced Liposomal Technology
                             for your healthiest, most radiant self.
                         </p>
                         <div className="flex flex-col gap-3 text-sm text-[hsl(var(--muted-foreground))]">
-                            <div className="flex items-center gap-2">
+                            <a href="mailto:Info.vibrantlifecare@gmail.com" className="flex items-center gap-2 hover:text-[hsl(var(--primary))] transition-colors">
                                 <Mail className="w-4 h-4 shrink-0 text-[hsl(var(--primary))]" />
-                                <span>hello@vibrant.in</span>
-                            </div>
-                            <div className="flex items-center gap-2">
+                                <span>Info.vibrantlifecare@gmail.com</span>
+                            </a>
+                            <a href="tel:+919600519669" className="flex items-center gap-2 hover:text-[hsl(var(--primary))] transition-colors">
                                 <Phone className="w-4 h-4 shrink-0 text-[hsl(var(--primary))]" />
-                                <span>+91 98765 43210</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                                <MapPin className="w-4 h-4 shrink-0 text-[hsl(var(--primary))]" />
-                                <span>Mumbai, India</span>
+                                <span>96005 19669</span>
+                            </a>
+                            <div className="flex items-start gap-2">
+                                <MapPin className="w-4 h-4 shrink-0 text-[hsl(var(--primary))] mt-0.5" />
+                                <span className="leading-relaxed">
+                                    Vibrant Lifecare Pvt Ltd<br />
+                                    No 66, 3rd Cross, Krishna Colony, Singanallur, Coimbatore — 641005
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -79,7 +86,7 @@ export default function Footer() {
                 {/* Bottom */}
                 <div className="border-t mt-12 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
                     <p className="text-xs text-[hsl(var(--muted-foreground))]">
-                        © 2026 Vibrant. All rights reserved. Made with ❤️ in India.
+                        © 2026 Vibrant Lifecare Pvt Ltd. All rights reserved. Made with ❤️ in India.
                     </p>
                     <div className="flex items-center gap-4">
                         {[Instagram, Twitter, Facebook].map((Icon, i) => (
